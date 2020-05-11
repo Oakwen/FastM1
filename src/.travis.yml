@@ -1,0 +1,10 @@
+language: c
+compiler: gcc
+os: windows
+
+before_script:
+  - cd build
+  - cmake ..
+
+script:
+  - make
