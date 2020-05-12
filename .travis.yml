@@ -36,9 +36,13 @@ os: windows
 #     - $HOME/AppData/Local/Temp/chocolatey
 #     - /C/tools/msys64
 
-before_script:
-  - cd build
-  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+# before_script:
+#   - cd build
+#   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+
+# script:
+#   - mingw32-make
 
 script:
-  - mingw32-make
+  - gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
+  - gcc -m32 fastm1.o nfc-utils.o -o fastm1 -L"./" -lnfc
