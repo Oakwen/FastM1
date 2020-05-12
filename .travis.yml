@@ -38,7 +38,7 @@ cache:
 
 before_script:
   - cd build
-  - cmake ..
+  - cmake .. -G "MinGW Makefiles"
 
 script:
   - mingw32-make
