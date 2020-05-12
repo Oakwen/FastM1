@@ -1,6 +1,19 @@
 language: c
 compiler: gcc
-os: windows
+dist: bionic
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install mingw-w64
+  - cd build
+  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+
+script:
+  - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+
+
+
+# os: windows
 
 # before_install:
 #   - |-
@@ -39,12 +52,12 @@ os: windows
 #   - choco uninstall -y cmake.install
 #   - choco install cmake
 
-before_script:
-  - cd build
-  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+# before_script:
+#   - cd build
+#   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
-script:
-  - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+# script:
+#   - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
 
 # script:
 #   - gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
