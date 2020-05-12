@@ -1,7 +1,7 @@
 language: c
 compiler: gcc
 os: windows
-# os: windows
+before_install: -- choco upgrade --no-progress -ymingw
 # before_install:
 #   - |-
 #     case $TRAVIS_OS_NAME in
