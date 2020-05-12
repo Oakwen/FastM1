@@ -1,9 +1,7 @@
 language: c
 compiler: gcc
 os: windows
-before_install:
-  - choco uninstall --no-progress -y mingw
-  - choco install --no-progress -y mingw
+
 # before_install:
 #   - |-
 #     case $TRAVIS_OS_NAME in
@@ -46,8 +44,8 @@ before_script:
   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - mingw32-make
-  - ls /C/WINDOWS/SysWOW64
+  - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+
 # script:
 #   - gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
 #   - gcc -m32 fastm1.o nfc-utils.o -o fastm1 -L"./" -lnfc
