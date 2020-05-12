@@ -37,8 +37,9 @@ os: windows
 #     - /C/tools/msys64
 
 before_script:
-  # - cd build
-  - cmake . -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+  - cd build
+  - ls
+  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
   - mingw32-make
