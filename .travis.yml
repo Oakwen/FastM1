@@ -45,7 +45,7 @@ before_script:
 
 script:
   - mingw32-make
-  - ls
+  - ls /C/WINDOWS/SysWOW64
 # script:
 #   - gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
 #   - gcc -m32 fastm1.o nfc-utils.o -o fastm1 -L"./" -lnfc
