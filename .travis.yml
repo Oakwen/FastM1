@@ -38,7 +38,7 @@ os: windows
 
 before_script:
   # - cd build
-  - cmake ./build -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+  - cmake . -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
   - mingw32-make
