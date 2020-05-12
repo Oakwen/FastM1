@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(fastm1 VERSION 0.1.0)
 
+# the name of the target operating system
+SET(CMAKE_SYSTEM_NAME Windows)
+
 project(fastm1 C)
 
 set(CMAKE_C_STANDARD 99)
