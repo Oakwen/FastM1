@@ -18,4 +18,4 @@ AUX_SOURCE_DIRECTORY(src DIR_SRCS)
 ADD_LIBRARY(nfcutils STATIC include/nfc-utils.c)
 
 add_executable(fastm1  ${CMAKE_CURRENT_SOURCE_DIR}/src/fastm1.c)
-TARGET_LINK_LIBRARIES(fastm1  nfcutils libnfc.a )
+TARGET_LINK_LIBRARIES(fastm1 nfcutils nfc)
