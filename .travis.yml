@@ -36,7 +36,7 @@ os: windows
 #     - $HOME/AppData/Local/Temp/chocolatey
 #     - /C/tools/msys64
 before_install:
-  - choco uninstall -y cmake
+  - choco uninstall -y cmake.install
   - choco install cmake
 
 before_script:
