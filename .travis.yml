@@ -1,21 +1,6 @@
 language: c
-dist: bionic
 compiler: gcc
-
-env:
-  - BLD=cmake
-
-addons:
-  apt:
-    packages:
-      - cmake
-      - mingw-w64
-
-script:
-  - cd build
-  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
-  - make
-  - ls
+os: windows
 # os: windows
 # before_install:
 #   - |-
@@ -54,13 +39,13 @@ script:
 #   - choco uninstall -y cmake.install
 #   - choco install cmake
 
-# before_script:
-#   - cd build
-#   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+before_script:
+  - cd build
+  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
-# script:
-#   - mingw32-make
-#   - ls
+script:
+  - mingw32-make
+  - ls
 # script:
 #   - gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
 #   - gcc -m32 fastm1.o nfc-utils.o -o fastm1 -L"./" -lnfc
