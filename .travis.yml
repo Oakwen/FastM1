@@ -3,12 +3,11 @@ compiler: gcc
 os: windows
 
 before_install:
-#   - powershell -Command '$Env:path="/C/tools/msys64/mingw32/bin;"+$Env:Path'
-  - powershell -Command '$Env:path="C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin;"+$Env:Path'
-  - powershell -Command '$Env:path'
-  - powershell -Command 'gcc -v'
-  - powershell -Command 'cd build'
-  - powershell -Command 'cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"'
+  - export PATH=/C/tools/msys64/mingw32/bin:$PATH
+  - ls
+  - gcc -v
+  - cd build
+  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - powershell -Command 'mingw32-make'
+  - mingw32-make
