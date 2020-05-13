@@ -6,7 +6,7 @@
 
 Requirements
 
-============
+==================
 
 Some NFC drivers depend on third party software:
 
