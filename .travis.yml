@@ -3,7 +3,7 @@ compiler: gcc
 os: windows
 
 before_install:
-  - powershell -Command $Env:path="/C/tools/msys64/mingw32/bin;"+$Env:Path
+  - powershell -Command '$Env:path="/C/tools/msys64/mingw32/bin;"+$Env:Path'
   - powershell -Command $Env:path
   - powershell -Command gcc -v
   - powershell -Command cd build
