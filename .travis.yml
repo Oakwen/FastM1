@@ -1,18 +1,28 @@
 language: c
 compiler: gcc
-os: windows
-# dist: bionic
+# os: windows
+dist: bionic
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install mingw-w64
+  
+script:
+  - cmake -H"./" -B"./build"  -DCMAKE_TOOLCHAIN_FILE=windows.toolchain.cmake
+  - cd build
+  - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+
+# ------------------------------------------------------------------------
 # before_install:
 #   - sudo apt-get update
 #   - sudo apt-get install mingw-w64
 #   - cd build
 #   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
-script:
+# script:
 #   - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
-  - i686-w64-mingw32-gcc  -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
-  - i686-w64-mingw32-gcc  -m32 fastm1.o nfc-utils.o -o fastm1 -L"./lib" -lnfc
+#   - i686-w64-mingw32-gcc  -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
+#   - i686-w64-mingw32-gcc  -m32 fastm1.o nfc-utils.o -o fastm1 -L"./lib" -lnfc
 #   - x86_64-w64-mingw32-gcc -m32 src/fastm1.c include/nfc-utils.c -c -I ./include
 #   - x86_64-w64-mingw32-gcc -m32 fastm1.o nfc-utils.o -o fastm1 -L"./lib" -lnfc
 
