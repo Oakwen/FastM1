@@ -10,7 +10,8 @@ before_install:
 script:
   - cmake -H"./" -B"./build"  -DCMAKE_TOOLCHAIN_FILE=windows.toolchain.cmake
   - cd build
-  - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+#   - mingw32-make MINGW64=1 CC=gcc WINDOWSHELL=1 SDL=1 NOOBJDUMP=1
+  - make
 
 # ------------------------------------------------------------------------
 # before_install:
