@@ -3,12 +3,11 @@ compiler: gcc
 os: windows
 
 before_install:
-  - powershell
-  - $Env:path="/C/tools/msys64/mingw32/bin;"+$Env:Path
-  - $Env:path
-  - gcc -v
-  - cd build
-  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+  - powershell -Command $Env:path="/C/tools/msys64/mingw32/bin;"+$Env:Path
+  - powershell -Command $Env:path
+  - powershell -Command gcc -v
+  - powershell -Command cd build
+  - powershell -Command cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - mingw32-make
+  - powershell -Command mingw32-make
