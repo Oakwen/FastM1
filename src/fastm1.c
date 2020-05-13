@@ -93,3 +93,4 @@ int main(int argc, const char *argv[]) {
   nfc_exit(context);
   exit(EXIT_SUCCESS);
 }
+
