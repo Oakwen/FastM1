@@ -4,7 +4,7 @@ os: windows
 
 before_install:
   - export PATH=/C/tools/msys64/mingw32/bin:$PATH
-  - ls
+  - ls /C/tools/msys64/mingw32/bin
   - gcc -v
   - cd build
   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
