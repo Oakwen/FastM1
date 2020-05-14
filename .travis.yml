@@ -35,17 +35,8 @@ cache:
     directories:
     - $HOME/AppData/Local/Temp/chocolatey
     - /C/tools/msys64
-    
-# before_install:
-# #   - export PATH=/C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64:$PATH
-# #   - find /C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
-# #   - gcc -v
-#   - cd build
-#   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - gcc -v
-#   - ls /C/tools/msys64/mingw32/bin
   - cd build
   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
   - mingw32-make
