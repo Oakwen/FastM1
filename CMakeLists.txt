@@ -20,6 +20,8 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 AUX_SOURCE_DIRECTORY(src DIR_SRCS)
 
 ADD_LIBRARY(nfcutils STATIC include/nfc-utils.c)
+set_target_properties(nfcutils PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
 
 add_executable(fastm1  ${CMAKE_CURRENT_SOURCE_DIR}/src/fastm1.c)
+set_target_properties(fastm1 PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
 TARGET_LINK_LIBRARIES(fastm1 nfcutils nfc)
