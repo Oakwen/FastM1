@@ -53,7 +53,6 @@
 
 #include "err.h"
 #include "nfc/nfc.h"
-#include "mfclassic.h"
 #include "nfc-utils.h"
 
 #define MAX_DEVICE_COUNT 16
@@ -76,9 +75,6 @@ int main(int argc, const char *argv[]) {
     ERR("Unable to init libnfc (malloc)");
     exit(EXIT_FAILURE);
   }
-
-  // Display something
-  print_usage("test");
 
   // Display libnfc version
   acLibnfcVersion = nfc_version();
