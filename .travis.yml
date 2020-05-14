@@ -12,9 +12,9 @@ before_install:
         export msys2='cmd //C RefreshEnv.cmd '
         export msys2+='& set MSYS=winsymlinks:nativestrict '
         export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+        export mingw64="$msys2 -mingw32 -full-path -here -c "\"\$@"\" --"
         export msys2+=" -msys2 -c "\"\$@"\" --"
-        $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
+        $msys2 pacman --sync --noconfirm --needed mingw-w64-i686-toolchain
         ## Install more MSYS2 packages from https://packages.msys2.org/base here
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         export PATH=/C/tools/msys64/mingw32/bin:$PATH
@@ -44,8 +44,8 @@ cache:
 #   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - $mingw64 gcc -v
+  - gcc -v
 #   - ls /C/tools/msys64/mingw32/bin
-  - $mingw64 cd build
-  - $mingw64 cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
-  - $mingw64 mingw32-make
+  - cd build
+  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+  - mingw32-make
