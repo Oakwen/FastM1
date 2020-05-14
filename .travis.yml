@@ -44,8 +44,8 @@ cache:
 #   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
 script:
-  - gcc -v
-  - ls /C/tools/msys64/mingw32/bin
-  - cd build
-  - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
-  - mingw32-make
+  - $mingw64 gcc -v
+#   - ls /C/tools/msys64/mingw32/bin
+  - $mingw64 cd build
+  - $mingw64 cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
+  - $mingw64 mingw32-make
