@@ -3,9 +3,9 @@ compiler: gcc
 os: windows
 
 before_install:
-  - export PATH=/C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64:$PATH
-  - find /C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
-  - gcc -v
+#   - export PATH=/C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64:$PATH
+#   - find /C/ProgramData/chocolatey/lib/mingw/tools/install/mingw64
+#   - gcc -v
   - cd build
   - cmake .. -G "MinGW Makefiles" -D CMAKE_SH="CMAKE_SH-NOTFOUND"
 
