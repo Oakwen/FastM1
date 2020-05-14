@@ -1,6 +1,6 @@
 # About FastM1
 
-![c](https://img.shields.io/badge/language-c-blue.svg)    [![libnfc](https://img.shields.io/librariesio/release/homebrew/libnfc/1.7.1)](https://github.com/nfc-tools/libnfc)    [![Build Status](https://travis-ci.org/Oakwen/fastm1.svg?branch=master)](https://travis-ci.org/Oakwen/fastm1)
+![c language](https://img.shields.io/badge/language-c-blue.svg)    [![libnfc](https://img.shields.io/librariesio/release/homebrew/libnfc/1.7.1)](https://github.com/nfc-tools/libnfc)    [![Build Status](https://travis-ci.org/Oakwen/fastm1.svg?branch=master)](https://travis-ci.org/Oakwen/fastm1)
 
 快速读写M1卡内容，方便快速初始化卡片。
 
