@@ -18,8 +18,10 @@ add_library(nfcutils STATIC src/nfc-utils.c)
 set_target_properties(nfcutils PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
 
 add_library(mifare STATIC src/mifare.c)
-add_library(mfclassic STATIC src/mfclassic.c)
 
 add_executable(fastm1  ${CMAKE_CURRENT_SOURCE_DIR}/src/fastm1.c)
 set_target_properties(fastm1 PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
-target_link_libraries(fastm1 nfcutils mifare mfclassic nfc)
+target_link_libraries(fastm1 nfcutils mifare nfc)
+
+add_executable(test_libnfc ${CMAKE_CURRENT_SOURCE_DIR}/src/test_libnfc.c)
+target_link_libraries(test_libnfc nfcutils mifare nfc)
