@@ -30,39 +30,36 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * Note that this license only applies on the examples, NFC library itself is under LGPL
+ * Note that this license only applies on the examples, NFC library itself is
+ * under LGPL
  *
  */
 /**
  * @file nfc-utils.c
- * @brief Provide some examples shared functions like print, parity calculation, options parsing.
+ * @brief Provide some examples shared functions like print, parity calculation,
+ * options parsing.
  */
 #include <nfc/nfc.h>
 #include <err.h>
 
 #include "nfc-utils.h"
 
-uint8_t
-oddparity(const uint8_t bt)
-{
+uint8_t oddparity(const uint8_t bt) {
   // cf http://graphics.stanford.edu/~seander/bithacks.html#ParityParallel
   return (0x9669 >> ((bt ^ (bt >> 4)) & 0xF)) & 1;
 }
 
-void
-oddparity_bytes_ts(const uint8_t *pbtData, const size_t szLen, uint8_t *pbtPar)
-{
-  size_t  szByteNr;
+void oddparity_bytes_ts(const uint8_t *pbtData, const size_t szLen,
+                        uint8_t *pbtPar) {
+  size_t szByteNr;
   // Calculate the parity bits for the command
   for (szByteNr = 0; szByteNr < szLen; szByteNr++) {
     pbtPar[szByteNr] = oddparity(pbtData[szByteNr]);
   }
 }
 
-void
-print_hex(const uint8_t *pbtData, const size_t szBytes)
-{
-  size_t  szPos;
+void print_hex(const uint8_t *pbtData, const size_t szBytes) {
+  size_t szPos;
 
   for (szPos = 0; szPos < szBytes; szPos++) {
     printf("%02x  ", pbtData[szPos]);
@@ -70,12 +67,10 @@ print_hex(const uint8_t *pbtData, const size_t szBytes)
   printf("\n");
 }
 
-void
-print_hex_bits(const uint8_t *pbtData, const size_t szBits)
-{
+void print_hex_bits(const uint8_t *pbtData, const size_t szBits) {
   uint8_t uRemainder;
-  size_t  szPos;
-  size_t  szBytes = szBits / 8;
+  size_t szPos;
+  size_t szBytes = szBits / 8;
 
   for (szPos = 0; szPos < szBytes; szPos++) {
     printf("%02x  ", pbtData[szPos]);
@@ -92,12 +87,11 @@ print_hex_bits(const uint8_t *pbtData, const size_t szBits)
   printf("\n");
 }
 
-void
-print_hex_par(const uint8_t *pbtData, const size_t szBits, const uint8_t *pbtDataPar)
-{
+void print_hex_par(const uint8_t *pbtData, const size_t szBits,
+                   const uint8_t *pbtDataPar) {
   uint8_t uRemainder;
-  size_t  szPos;
-  size_t  szBytes = szBits / 8;
+  size_t szPos;
+  size_t szBytes = szBits / 8;
 
   for (szPos = 0; szPos < szBytes; szPos++) {
     printf("%02x", pbtData[szPos]);
@@ -119,9 +113,7 @@ print_hex_par(const uint8_t *pbtData, const size_t szBits, const uint8_t *pbtDat
   printf("\n");
 }
 
-void
-print_nfc_target(const nfc_target *pnt, bool verbose)
-{
+void print_nfc_target(const nfc_target *pnt, bool verbose) {
   char *s;
   str_nfc_target(&s, pnt, verbose);
   printf("%s", s);
