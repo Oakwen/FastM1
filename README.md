@@ -11,3 +11,9 @@ Requirements
 Some NFC drivers depend on third party software:
 
 * libnfc [https://github.com/nfc-tools/libnfc](https://github.com/nfc-tools/libnfc)
+
+* pn53x_usb & acr122_usb [libusb-0.1](http://libusb.sf.net)
+
+* acr122_pcsc [pcsc-lite](http://pcsclite.alioth.debian.org/)
+
+* pcsc Support build with pcsc driver, which can be using all compatible readers, Feitian R502 and bR500 already passed the test.
