@@ -703,88 +703,11 @@ int main(int argc, const char *argv[]) {
   const char *acLibnfcVersion;
   int unlock = 0;
 
-  char *temp_file_data = "temp.mfd";
-
-  ///////////////////////////////////////////////////////////////////
-  // if (argc < 2) {
-  //   print_usage(argv[0]);
-  //   exit(EXIT_FAILURE);
-  // }
-  // const char *command = argv[1];
-
-  // if (argc < 5) {
-  //   print_usage(argv[0]);
-  //   exit(EXIT_FAILURE);
-  // }
-  // if (strcmp(command, "r") == 0 || strcmp(command, "R") == 0) {
-  //   atAction = ACTION_READ;
-  //   if (strcmp(command, "R") == 0) unlock = 1;
-  //   bUseKeyA = tolower((int)((unsigned char)*(argv[2]))) == 'a';
-  //   printf("bUseKeyA: %d\n", bUseKeyA);
-  //   bTolerateFailures = tolower((int)((unsigned char)*(argv[2]))) !=
-  //                       (int)((unsigned char)*(argv[2]));
-  //   printf("bTolerateFailures: %d\n", bTolerateFailures);
-  //   bUseKeyFile = (argc > 5);
-  //   printf("bUseKeyFile: %d\n", bUseKeyFile);
-  //   bForceKeyFile = ((argc > 6) && (strcmp((char *)argv[6], "f") == 0));
-  //   printf("bForceKeyFile: %d\n", bForceKeyFile);
-  // } else if (strcmp(command, "w") == 0 || strcmp(command, "W") == 0 ||
-  //            strcmp(command, "f") == 0) {
-  //   atAction = ACTION_WRITE;
-  //   if (strcmp(command, "W") == 0) unlock = 1;
-  //   bFormatCard = (strcmp(command, "f") == 0);
-  //   printf("bFormatCard: %d\n", bFormatCard);
-  //   bUseKeyA = tolower((int)((unsigned char)*(argv[2]))) == 'a';
-  //   printf("bUseKeyA: %d\n", bUseKeyA);
-  //   bTolerateFailures = tolower((int)((unsigned char)*(argv[2]))) !=
-  //                       (int)((unsigned char)*(argv[2]));
-  //   printf("bTolerateFailures: %d\n", bTolerateFailures);
-  //   bUseKeyFile = (argc > 5);
-  //   printf("bUseKeyFile: %d\n", bUseKeyFile);
-  //   bForceKeyFile = ((argc > 6) && (strcmp((char *)argv[6], "f") == 0));
-  //   printf("bForceKeyFile: %d\n", bForceKeyFile);
-  // }
-  // if (argv[3][0] == 'U') {
-  //   unsigned long int _uid;
-  //
-  //   if (strlen(argv[3]) != 9) {
-  //     printf("Error, illegal tag specification, use U01ab23cd for
-  //     example.\n"); print_usage(argv[0]); exit(EXIT_FAILURE);
-  //   }
-  //   _uid = strtoul(argv[3] + 1, NULL, 16);
-  //   tag_uid[0] = (_uid & 0xff000000UL) >> 24;
-  //   tag_uid[1] = (_uid & 0x00ff0000UL) >> 16;
-  //   tag_uid[2] = (_uid & 0x0000ff00UL) >> 8;
-  //   tag_uid[3] = (_uid & 0x000000ffUL);
-  //   printf("Attempting to use specific UID: 0x%2x 0x%2x 0x%2x 0x%2x\n",
-  //          tag_uid[0], tag_uid[1], tag_uid[2], tag_uid[3]);
-  // } else {
-  //   tag_uid = NULL;
-  // }
-
-  // if (atAction == ACTION_USAGE) {
-  //   print_usage(argv[0]);
-  //   exit(EXIT_FAILURE);
-  // }
-  // We don't know yet the card size so let's read only the UID from the keyfile
-  // for the moment
-  // if (bUseKeyFile) {
-  //   FILE *pfKeys = fopen(argv[5], "rb");
-  //   if (pfKeys == NULL) {
-  //     printf("Could not open keys file: %s\n", argv[5]);
-  //     exit(EXIT_FAILURE);
-  //   }
-  //   if (fread(&mtKeys, 1, 4, pfKeys) != 4) {
-  //     printf("Could not read UID from key file: %s\n", argv[5]);
-  //     fclose(pfKeys);
-  //     exit(EXIT_FAILURE);
-  //   }
-  //   fclose(pfKeys);
-  // }
+  char *temp_file_data = "temp.dump";
 
   /////////////////////////////////////////////////////////////////////////////////////////
   // w a u temp.mfd
-  // 参数：读卡模式，任意id，使用密钥A，读取的m1卡内容存在文件temp.mfd内。
+  // 参数：写卡模式，任意id，使用密钥A，将temp.dump文件内容写入，0号扇区不写。
   atAction = ACTION_READ;
   bUseKeyA = 1;
   bTolerateFailures = 0;
