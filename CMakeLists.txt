@@ -8,6 +8,8 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_C_COMPILER gcc)
 set(CMAKE_C_FLAGS -m32)
+add_compile_options("-fexec-charset=gbk")
+
 
 include_directories(include)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
@@ -15,12 +17,12 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
 aux_source_directory(src DIR_SRCS)
 
 add_library(nfcutils STATIC src/nfc-utils.c)
-set_target_properties(nfcutils PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
+# set_target_properties(nfcutils PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
 
 add_library(mifare STATIC src/mifare.c)
 
 add_executable(fastm1  ${CMAKE_CURRENT_SOURCE_DIR}/src/fastm1.c)
-set_target_properties(fastm1 PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
+# set_target_properties(fastm1 PROPERTIES COMPILE_FLAGS"-m32" LINK_FLAGS"-m32")
 target_link_libraries(fastm1 nfcutils mifare nfc)
 
 add_executable(test_libnfc ${CMAKE_CURRENT_SOURCE_DIR}/src/test_libnfc.c)

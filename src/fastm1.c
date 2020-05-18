@@ -51,7 +51,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-
+#include <locale.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -308,7 +308,7 @@ static bool read_card(int read_unlocked) {
     // magic card, they don't need to use the R mode. We'll trigger a warning
     // and let them proceed.
     if (magic2) {
-      printf("Note: This card does not require an unlocked read (R) \n");
+      printf("提示: 本卡片读取无需解锁\n");
       read_unlocked = 0;
     } else {
       // If User has requested an unlocked read, but we're unable to unlock the
@@ -319,7 +319,7 @@ static bool read_card(int read_unlocked) {
     }
   }
 
-  printf("Reading out %d blocks |", uiBlocks + 1);
+  printf("总共读取了 %d blocks |", uiBlocks + 1);
   // Read the card from end to begin
   for (iBlock = uiBlocks; iBlock >= 0; iBlock--) {
     // Authenticate everytime we reach a trailer block
@@ -328,7 +328,7 @@ static bool read_card(int read_unlocked) {
         // When a failure occured we need to redo the anti-collision
         if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <=
             0) {
-          printf("!\nError: tag was removed\n");
+          printf("!\n错误: 卡片已移除\n");
           return false;
         }
         bFailure = false;
@@ -338,7 +338,7 @@ static bool read_card(int read_unlocked) {
 
       // Try to authenticate for the current sector
       if (!read_unlocked && !authenticate(iBlock)) {
-        printf("!\nError: authentication failed for block 0x%02x\n", iBlock);
+        printf("!\n错误: block 0x%02x 授权失败\n", iBlock);
         return false;
       }
       // Try to read out the trailer
@@ -370,7 +370,7 @@ static bool read_card(int read_unlocked) {
           }
         }
       } else {
-        printf("!\nfailed to read trailer block 0x%02x\n", iBlock);
+        printf("!\n读取trailer block 0x%02x 失败\n", iBlock);
         bFailure = true;
       }
     } else {
@@ -381,7 +381,7 @@ static bool read_card(int read_unlocked) {
           memcpy(mtDump.amb[iBlock].mbd.abtData, mp.mpd.abtData,
                  sizeof(mtDump.amb[iBlock].mbd.abtData));
         } else {
-          printf("!\nError: unable to read block 0x%02x\n", iBlock);
+          printf("!\n错误: 无法读取 block 0x%02x\n", iBlock);
           bFailure = true;
         }
       }
@@ -391,7 +391,8 @@ static bool read_card(int read_unlocked) {
     if ((!bTolerateFailures) && bFailure) return false;
   }
   printf("|\n");
-  printf("Done, %d of %d blocks read.\n", uiReadBlocks, uiBlocks + 1);
+  printf("读卡完成, 总计 %d 扇区，已读取 %d 扇区.\n", uiBlocks + 1,
+         uiReadBlocks);
   fflush(stdout);
 
   return true;
@@ -408,7 +409,7 @@ static bool write_card(int write_block_zero) {
     // magic card, they don't need to use the W mode. We'll trigger a warning
     // and let them proceed.
     if (magic2) {
-      printf("Note: This card does not require an unlocked write (W) \n");
+      printf("提示: 本卡片写入无需解锁\n");
       write_block_zero = 0;
     } else {
       // If User has requested an unlocked write, but we're unable to unlock
@@ -419,7 +420,7 @@ static bool write_card(int write_block_zero) {
     }
   }
 
-  printf("Writing %d blocks |", uiBlocks + 1);
+  printf("正在写入 %d blocks |", uiBlocks + 1);
   // Completely write the card, end to start, but skipping block 0
   for (uiBlock = 4; uiBlock <= uiBlocks; uiBlock++) {
     // Authenticate everytime we reach the first sector of a new block
@@ -514,7 +515,7 @@ static bool write_card(int write_block_zero) {
   // Write Block 0 if necessary
   if (write_block_zero || magic2 || magic3) {
     for (uiBlock = 0; uiBlock < 4; uiBlock++) {
-      printf("uiBlock= %d\n", uiBlock);
+      // printf("uiBlock= %d\n", uiBlock);
       // The first block 0x00 is read only, skip this
       if (uiBlock == 0) {
         // If the card is not magic, we're gonna skip over
@@ -530,7 +531,7 @@ static bool write_card(int write_block_zero) {
           // When a failure occured we need to redo the anti-collision
           if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0,
                                                   &nt) <= 0) {
-            printf("!\nError: tag was removed\n");
+            printf("!\n错误: 卡片已移除\n");
             return false;
           }
           bFailure = false;
@@ -543,7 +544,7 @@ static bool write_card(int write_block_zero) {
         // If we're writing something else, we'll need to authenticate
         if ((write_block_zero && magic3) || !write_block_zero) {
           if (!authenticate(uiBlock) && !bTolerateFailures) {
-            printf("!\nError: authentication failed for block %02x\n", uiBlock);
+            printf("!\n错误: block %02x 授权失败\n", uiBlock);
             return false;
           }
         }
@@ -564,20 +565,20 @@ static bool write_card(int write_block_zero) {
           if ((mp.mpd.abtData[0] ^ mp.mpd.abtData[1] ^ mp.mpd.abtData[2] ^
                mp.mpd.abtData[3] ^ mp.mpd.abtData[4]) != 0x00 &&
               !magic2) {
-            printf("!\nError: incorrect BCC in MFD file!\n");
-            printf("Expecting BCC=%02X\n",
-                   mp.mpd.abtData[0] ^ mp.mpd.abtData[1] ^ mp.mpd.abtData[2] ^
-                       mp.mpd.abtData[3]);
+            printf("!\n错误: MFD文件的BCC值错误!\n");
+            printf("期望的 BCC=%02X\n", mp.mpd.abtData[0] ^ mp.mpd.abtData[1] ^
+                                            mp.mpd.abtData[2] ^
+                                            mp.mpd.abtData[3]);
             return false;
           }
         }
         if (!nfc_initiator_mifare_cmd(pnd, MC_WRITE, uiBlock, &mp)) {
           bFailure = true;
-          printf("Failure to write to data block %i\n", uiBlock);
+          printf("写入 block %i 失败\n", uiBlock);
         }
 
       } else {
-        printf("Failure during write process.\n");
+        printf("写入过程中发生错误.\n");
       }
 
       // Show if the write went well for each block
@@ -587,7 +588,8 @@ static bool write_card(int write_block_zero) {
   }
 
   printf("|\n");
-  printf("Done, %d of %d blocks written.\n", uiWriteBlocks, uiBlocks + 1);
+  printf("写入完成, 总计 %d 扇区，已写入 %d 扇区.\n", uiBlocks + 1,
+         uiWriteBlocks);
   fflush(stdout);
 
   return true;
@@ -595,57 +597,59 @@ static bool write_card(int write_block_zero) {
 
 typedef enum { ACTION_READ, ACTION_WRITE, ACTION_USAGE } action_t;
 
-static void print_usage(const char *pcProgramName) {
-  printf("Usage: ");
-  printf("%s f|r|R|w|W a|b u|U<01ab23cd> <dump.mfd> [<keys.mfd> [f]]\n",
-         pcProgramName);
-  printf(
-      "  f|r|R|w|W     - Perform format (f) or read from (r) or unlocked read "
-      "from (R) or write to (w) or unlocked write to (W) card\n");
-  printf(
-      "                  *** format will reset all keys to FFFFFFFFFFFF and "
-      "all data to 00 and all ACLs to default\n");
-  printf(
-      "                  *** unlocked read does not require authentication and "
-      "will reveal A and B keys\n");
-  printf(
-      "                  *** note that unlocked write will attempt to "
-      "overwrite block 0 including UID\n");
-  printf(
-      "                  *** unlocking only works with special Mifare 1K cards "
-      "(Chinese clones)\n");
-  printf(
-      "  a|A|b|B       - Use A or B keys for action; Halt on errors (a|b) or "
-      "tolerate errors (A|B)\n");
-  printf(
-      "  u|U           - Use any (u) uid or supply a uid specifically as "
-      "U01ab23cd.\n");
-  printf(
-      "  <dump.mfd>    - MiFare Dump (MFD) used to write (card to MFD) or (MFD "
-      "to card)\n");
-  printf(
-      "  <keys.mfd>    - MiFare Dump (MFD) that contain the keys (optional)\n");
-  printf(
-      "  f             - Force using the keyfile even if UID does not match "
-      "(optional)\n");
+// static void print_usage(const char *pcProgramName) {
+//   printf("Usage: ");
+//   printf("%s f|r|R|w|W a|b u|U<01ab23cd> <dump.mfd> [<keys.mfd> [f]]\n",
+//          pcProgramName);
+//   printf(
+//       "  f|r|R|w|W     - Perform format (f) or read from (r) or unlocked read
+//       " "from (R) or write to (w) or unlocked write to (W) card\n");
+//   printf(
+//       "                  *** format will reset all keys to FFFFFFFFFFFF and "
+//       "all data to 00 and all ACLs to default\n");
+//   printf(
+//       "                  *** unlocked read does not require authentication
+//       and " "will reveal A and B keys\n");
+//   printf(
+//       "                  *** note that unlocked write will attempt to "
+//       "overwrite block 0 including UID\n");
+//   printf(
+//       "                  *** unlocking only works with special Mifare 1K
+//       cards "
+//       "(Chinese clones)\n");
+//   printf(
+//       "  a|A|b|B       - Use A or B keys for action; Halt on errors (a|b) or
+//       " "tolerate errors (A|B)\n");
+//   printf(
+//       "  u|U           - Use any (u) uid or supply a uid specifically as "
+//       "U01ab23cd.\n");
+//   printf(
+//       "  <dump.mfd>    - MiFare Dump (MFD) used to write (card to MFD) or
+//       (MFD " "to card)\n");
+//   printf(
+//       "  <keys.mfd>    - MiFare Dump (MFD) that contain the keys
+//       (optional)\n");
+//   printf(
+//       "  f             - Force using the keyfile even if UID does not match "
+//       "(optional)\n");
 
-  printf("Examples: \n\n");
-  printf("  Read card to file, using key A:\n\n");
-  printf("    %s r a u mycard.mfd\n\n", pcProgramName);
-  printf("  Write file to blank card, using key A:\n\n");
-  printf("    %s w a u mycard.mfd\n\n", pcProgramName);
-  printf(
-      "  Write new data and/or keys to previously written card, using key "
-      "A:\n\n");
-  printf("    %s w a u newdata.mfd mycard.mfd\n\n", pcProgramName);
-  printf(
-      "  Format/wipe card (note two passes required to ensure writes for all "
-      "ACL cases):\n\n");
-  printf("    %s f A u dummy.mfd keyfile.mfd f\n", pcProgramName);
-  printf("    %s f B u dummy.mfd keyfile.mfd f\n\n", pcProgramName);
-  printf("  Read card to file, using key A and uid 0x01 0xab 0x23 0xcd:\n\n");
-  printf("    %s r a U01ab23cd mycard.mfd\n\n", pcProgramName);
-}
+//   printf("Examples: \n\n");
+//   printf("  Read card to file, using key A:\n\n");
+//   printf("    %s r a u mycard.mfd\n\n", pcProgramName);
+//   printf("  Write file to blank card, using key A:\n\n");
+//   printf("    %s w a u mycard.mfd\n\n", pcProgramName);
+//   printf(
+//       "  Write new data and/or keys to previously written card, using key "
+//       "A:\n\n");
+//   printf("    %s w a u newdata.mfd mycard.mfd\n\n", pcProgramName);
+//   printf(
+//       "  Format/wipe card (note two passes required to ensure writes for all
+//       " "ACL cases):\n\n");
+//   printf("    %s f A u dummy.mfd keyfile.mfd f\n", pcProgramName);
+//   printf("    %s f B u dummy.mfd keyfile.mfd f\n\n", pcProgramName);
+//   printf("  Read card to file, using key A and uid 0x01 0xab 0x23
+//   0xcd:\n\n"); printf("    %s r a U01ab23cd mycard.mfd\n\n", pcProgramName);
+// }
 
 bool is_directwrite() {
   printf("Checking if Badge is DirectWrite...\n");
@@ -661,7 +665,7 @@ bool is_directwrite() {
   bUseKeyFile = false;
   // Try to authenticate for the current sector
   if (!authenticate(0)) {
-    printf("!\nError: authentication failed for block 0x%02x\n", 0);
+    printf("!\n错误: block 0x%02x 授权失败\n", 0);
     bUseKeyFile = orig_bUseKeyFile;
     return false;
   }
@@ -672,30 +676,32 @@ bool is_directwrite() {
   uint8_t original_b0[16];
   if (nfc_initiator_mifare_cmd(pnd, MC_READ, 0, &mp)) {
     memcpy(original_b0, mp.mpd.abtData, sizeof(mp.mpd.abtData));
-    printf(" Original Block 0: ");
+    printf(" 原始Block 0: ");
     for (int i = 0; i < 16; i++) {
       printf("%02x", original_b0[i]);
     }
     printf("\n");
-    printf(" Original UID: %02x%02x%02x%02x\n", original_b0[0], original_b0[1],
+    printf(" 原始UID: %02x%02x%02x%02x\n", original_b0[0], original_b0[1],
            original_b0[2], original_b0[3]);
   } else {
-    printf("!\nError: unable to read block 0x%02x\n", 0);
+    printf("!\n错误: 无法读取 block 0x%02x\n", 0);
     return false;
   }
 
   printf(" Attempt to write Block 0 ...\n");
   memcpy(mp.mpd.abtData, original_b0, sizeof(original_b0));
   if (!nfc_initiator_mifare_cmd(pnd, MC_WRITE, 0, &mp)) {
-    printf("Failure to write to data block %i\n", 0);
+    printf("将数据写入至 block %i 时发生错误\n", 0);
     return false;
   }
-  printf(" Block 0 written successfully\n");
+  printf(" Block 0 写入成功\n");
 
   return true;
 }
 
 int main(int argc, const char *argv[]) {
+  setlocale(LC_ALL, "");
+
   action_t atAction = ACTION_USAGE;
   uint8_t *pbtUID;
   uint8_t _tag_uid[4];
@@ -719,17 +725,17 @@ int main(int argc, const char *argv[]) {
 
   nfc_init(&context);
   if (context == NULL) {
-    ERR("Unable to init libnfc (malloc)");
+    ERR("无法初始化libnfc (malloc)");
     exit(EXIT_FAILURE);
   } else {
     acLibnfcVersion = nfc_version();
-    printf("%s uses libnfc %s\n", argv[0], acLibnfcVersion);
+    printf("%s 使用libnfc版本: %s\n", argv[0], acLibnfcVersion);
   }
 
   // Try to open the NFC reader
   pnd = nfc_open(context, NULL);
   if (pnd == NULL) {
-    ERR("Error opening NFC reader");
+    ERR("打开NFC读卡器错误");
     nfc_exit(context);
     exit(EXIT_FAILURE);
   }
@@ -761,7 +767,7 @@ int main(int argc, const char *argv[]) {
       exit(EXIT_FAILURE);
     }
 
-    printf("NFC reader: %s opened\n", nfc_device_get_name(pnd));
+    printf("NFC读卡器: %s 已打开\n", nfc_device_get_name(pnd));
 
     // Try to find a MIFARE Classic tag
     int tags;
@@ -769,14 +775,14 @@ int main(int argc, const char *argv[]) {
     tags = nfc_initiator_select_passive_target(pnd, nmMifare, tag_uid,
                                                tag_uid == NULL ? 0 : 4, &nt);
     if (tags <= 0) {
-      printf("Error: no tag was found\n");
+      printf("错误: 未发现卡片\n");
       nfc_close(pnd);
       nfc_exit(context);
       exit(EXIT_FAILURE);
     }
     // Test if we are dealing with a MIFARE compatible tag
     if ((nt.nti.nai.btSak & 0x08) == 0) {
-      printf("Warning: tag is probably not a MFC!\n");
+      printf("警告: 卡片可能不是MFC卡!\n");
     }
 
     // Get the info from the current tag
@@ -789,22 +795,22 @@ int main(int argc, const char *argv[]) {
       // for the first 4 bytes
       if (memcmp(pbtUID, fileUid, 4) != 0) {
         printf(
-            "Expected MIFARE Classic card with UID starting as: "
-            "%02x%02x%02x%02x\n",
+            "MF1的UID应以: "
+            "%02x%02x%02x%02x 开头。\n",
             fileUid[0], fileUid[1], fileUid[2], fileUid[3]);
         printf(
-            "Got card with UID starting as:                     "
-            "%02x%02x%02x%02x\n",
+            "获取到的MF卡UID以:           "
+            "%02x%02x%02x%02x    开头\n",
             pbtUID[0], pbtUID[1], pbtUID[2], pbtUID[3]);
         if (!bForceKeyFile) {
-          printf("Aborting!\n");
+          printf("正在退出!\n");
           nfc_close(pnd);
           nfc_exit(context);
           exit(EXIT_FAILURE);
         }
       }
     }
-    printf("Found MIFARE Classic card:\n");
+    printf("发现MF卡:\n");
     print_nfc_target(&nt, false);
 
     // Guessing size
@@ -820,7 +826,7 @@ int main(int argc, const char *argv[]) {
     // Testing RATS
     int res;
     if ((res = get_rats()) > 0) {
-      printf("RATS support: yes\n");
+      printf("RATS: 支持\n");
       if ((res >= 10) && (abtRx[5] == 0xc1) && (abtRx[6] == 0x05) &&
           (abtRx[7] == 0x2f) && (abtRx[8] == 0x2f) &&
           ((nt.nti.nai.abtAtqa[1] & 0x02) == 0x00)) {
@@ -831,46 +837,46 @@ int main(int argc, const char *argv[]) {
       if ((res == 9) && (abtRx[5] == 0xda) && (abtRx[6] == 0xbc) &&
           (abtRx[7] == 0x19) && (abtRx[8] == 0x10)) {
         magic2 = true;
-        printf("Thsi is a chinese magic emulation card.\n");
+        printf("这是一张中国魔术卡.\n");
       }
     } else
-      printf("RATS support: no\n");
-    printf("Guessing size: seems to be a %lu-byte card\n",
+      printf("RATS : 不支持\n");
+    printf("猜测卡片容量: 开起来这是一张 %lu-byte 的卡片\n",
            (unsigned long)((uiBlocks + 1) * sizeof(mifare_classic_block)));
 
     // If size is 4k check for direct-write card
     if (uiBlocks == 0xff) {
       if (is_directwrite()) {
-        printf("Card is DirectWrite\n");
+        printf("卡片支持直接写入\n");
         magic3 = true;
         unlock = 0;
       } else {
-        printf("Card is not DirectWrite\n");
+        printf("卡片不支持直接写入\n");
       }
     }
 
     // Check to see if we have a One Time Write badge (magic3)
     if (pbtUID[0] == 0xaa && pbtUID[1] == 0x55 && pbtUID[2] == 0xc3 &&
         pbtUID[3] == 0x96) {
-      printf("Card appears to be a One Time Write Card..\n");
+      printf("卡片可能是一次写入卡(magic)..\n");
       magic3 = true;
       unlock = 0;
     }
 
-    if (bUseKeyFile) {
-      FILE *pfKeys = fopen(argv[5], "rb");
-      if (pfKeys == NULL) {
-        printf("Could not open keys file: %s\n", argv[5]);
-        exit(EXIT_FAILURE);
-      }
-      if (fread(&mtKeys, 1, (uiBlocks + 1) * sizeof(mifare_classic_block),
-                pfKeys) != (uiBlocks + 1) * sizeof(mifare_classic_block)) {
-        printf("Could not read keys file: %s\n", argv[5]);
-        fclose(pfKeys);
-        exit(EXIT_FAILURE);
-      }
-      fclose(pfKeys);
-    }
+    // if (bUseKeyFile) {
+    //   FILE *pfKeys = fopen(argv[5], "rb");
+    //   if (pfKeys == NULL) {
+    //     printf("找不到密钥文件: %s\n", argv[5]);
+    //     exit(EXIT_FAILURE);
+    //   }
+    //   if (fread(&mtKeys, 1, (uiBlocks + 1) * sizeof(mifare_classic_block),
+    //             pfKeys) != (uiBlocks + 1) * sizeof(mifare_classic_block)) {
+    //     printf("无法读取密钥文件: %s\n", argv[5]);
+    //     fclose(pfKeys);
+    //     exit(EXIT_FAILURE);
+    //   }
+    //   fclose(pfKeys);
+    // }
 
     if (atAction == ACTION_READ) {
       memset(&mtDump, 0x00, sizeof(mtDump));
@@ -878,13 +884,13 @@ int main(int argc, const char *argv[]) {
       FILE *pfDump = fopen(temp_file_data, "rb");
 
       if (pfDump == NULL) {
-        printf("Could not open dump file: %s\n", temp_file_data);
+        printf("找不到dump文件: %s\n", temp_file_data);
         exit(EXIT_FAILURE);
       }
 
       if (fread(&mtDump, 1, (uiBlocks + 1) * sizeof(mifare_classic_block),
                 pfDump) != (uiBlocks + 1) * sizeof(mifare_classic_block)) {
-        printf("Could not read dump file: %s\n", temp_file_data);
+        printf("无法读取dump文件: %s\n", temp_file_data);
         fclose(pfDump);
         exit(EXIT_FAILURE);
       }
@@ -894,31 +900,32 @@ int main(int argc, const char *argv[]) {
 
     if (atAction == ACTION_READ) {
       if (read_card(unlock)) {
-        printf("Writing data to file: %s ...", temp_file_data);
+        printf("正在写入数据至文件: %s ...", temp_file_data);
         fflush(stdout);
         FILE *pfDump = fopen(temp_file_data, "wb");
         if (pfDump == NULL) {
-          printf("Could not open dump file: %s\n", temp_file_data);
+          printf("未发现dump文件: %s\n", temp_file_data);
           nfc_close(pnd);
           nfc_exit(context);
           exit(EXIT_FAILURE);
         }
         if (fwrite(&mtDump, 1, (uiBlocks + 1) * sizeof(mifare_classic_block),
                    pfDump) != ((uiBlocks + 1) * sizeof(mifare_classic_block))) {
-          printf("\nCould not write to file: %s\n", temp_file_data);
+          printf("\n无法写入至文件: %s\n", temp_file_data);
           fclose(pfDump);
           nfc_close(pnd);
           nfc_exit(context);
           exit(EXIT_FAILURE);
         }
-        printf("Done.\n");
+        printf("已完成读取.\n");
         fclose(pfDump);
       }
     } else if (atAction == ACTION_WRITE) {
       write_card(unlock);
     }
     // }
-    printf("Press ENTER to continue, press Ctrl+C to exit.\n");
+    // printf("Press ENTER to continue, press Ctrl+C to exit.\n");
+    printf("按Enter键继续, 按Ctrl+C键退出.\n");
     fflush(stdin);
     getchar();
   }
