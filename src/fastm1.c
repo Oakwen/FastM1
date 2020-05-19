@@ -105,7 +105,7 @@ uint8_t abtUnlock2[1] = {0x43};
 
 static bool transmit_bits(const uint8_t *pbtTx, const size_t szTxBits) {
   // Show transmitted command
-  printf("Sent bits:     ");
+  printf("发送 bits:     ");
   print_hex_bits(pbtTx, szTxBits);
   // Transmit the bit frame command, we don't use the arbitrary parity feature
   if ((szRxBits = nfc_initiator_transceive_bits(
@@ -113,7 +113,7 @@ static bool transmit_bits(const uint8_t *pbtTx, const size_t szTxBits) {
     return false;
 
   // Show received answer
-  printf("Received bits: ");
+  printf("接收 bits: ");
   print_hex_bits(abtRx, szRxBits);
   // Succesful transfer
   return true;
@@ -121,7 +121,7 @@ static bool transmit_bits(const uint8_t *pbtTx, const size_t szTxBits) {
 
 static bool transmit_bytes(const uint8_t *pbtTx, const size_t szTx) {
   // Show transmitted command
-  printf("Sent bits:     ");
+  printf("发送 bits:     ");
   print_hex(pbtTx, szTx);
   // Transmit the command bytes
   int res;
@@ -130,7 +130,7 @@ static bool transmit_bytes(const uint8_t *pbtTx, const size_t szTx) {
     return false;
 
   // Show received answer
-  printf("Received bits: ");
+  printf("接收 bits: ");
   print_hex(abtRx, res);
   // Succesful transfer
   return true;
@@ -218,7 +218,7 @@ static bool authenticate(uint32_t uiBlock) {
       }
       if (nfc_initiator_select_passive_target(pnd, nmMifare, nt.nti.nai.abtUid,
                                               nt.nti.nai.szUidLen, NULL) <= 0) {
-        ERR("tag was removed");
+        ERR("卡片已被移除");
         return false;
       }
     }
@@ -243,13 +243,13 @@ static bool unlock_card(void) {
   transmit_bytes(abtHalt, 4);
   // now send unlock
   if (!transmit_bits(abtUnlock1, 7)) {
-    printf("Warning: Unlock command [1/2]: failed / not acknowledged.\n");
+    printf("警告: 解锁命令 [1/2]: 失败 / 未确认.\n");
   } else {
     if (transmit_bytes(abtUnlock2, 1)) {
       printf("Card unlocked\n");
       unlocked = true;
     } else {
-      printf("Warning: Unlock command [2/2]: failed / not acknowledged.\n");
+      printf("警告: 解锁命令 [2/2]: 失败 / 未确认.\n");
     }
   }
 
@@ -290,7 +290,7 @@ static int get_rats(void) {
   }
   // Reselect tag
   if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <= 0) {
-    printf("Error: tag disappeared\n");
+    printf("错误: 卡片不见了\n");
     nfc_close(pnd);
     nfc_exit(context);
     exit(EXIT_FAILURE);
