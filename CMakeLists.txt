@@ -5,7 +5,7 @@ set(CMAKE_SYSTEM_NAME Windows)
 project(fastm1 C)
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_C_COMPILER gcc)
 set(CMAKE_C_FLAGS -m32)
 add_compile_options("-fexec-charset=gbk")
