@@ -19,6 +19,8 @@ on:
     branches: [ master ]
   schedule:
     - cron: '36 20 * * 0'
+  watch:
+    types: started
 
 jobs:
   analyze:
